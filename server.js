@@ -1,8 +1,7 @@
 const User = require('./models/user');
 const Artist = require('./models/artists');
 const bodyParser = require('body-parser');
-
-//CALEB - is this needed??
+//CALEB - line 5 needed if line 6?
 const config = require('./config');
 const {CLIENT_ORIGIN} = require('./config');
 const mongoose = require('mongoose');
@@ -14,7 +13,6 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const express = require('express');
 const https = require('https');
 const http = require('http');
-
 
 var unirest = require('unirest');
 var events = require('events');
@@ -68,15 +66,12 @@ function closeServer() {
 }
 
 
-
-//CALEB - alter for SongKick
 let getArtistFromSongkick = function (artistName) {
     let emitter = new events.EventEmitter();
 
-//CALEB - get api key
     let options = {
         host: 'https://api.songkick.com',
-        path: "/api/3.0/search/artists.json?apikey={your_api_key}&query=" + artistName,
+        path: "/api/3.0/search/artists.json?apikey=ZOV7FltnOvfdD7o9&query=" + artistName,
         method: 'GET',
         headers: {
             'Content-Type': "application/json",
@@ -120,12 +115,13 @@ app.get('/songkick/:artistName', function (req, res) {
 let getConcertsFromSongkick = function (concerts) {
     let emitter = new events.EventEmitter();
     // ???
-    let artistId = res.artist_id;
+    let artistId;
+    console.log(artistId)
 
-    //CALEB - get api key + get artist_id from res above and set equal to artistId / cancert shoudle be "event" ??
+    //CALEB - need to get artist_id from artist schema/getArtistFromSongkick response and set equal to artistId / concert may need to be "event" ??
     let options = {
         host: 'https://api.songkick.com',
-        path: "/api/3.0/artists/" + artistId + "/calendar.json?apikey={your_api_key}",
+        path: "/api/3.0/artists/" + artistId + "/calendar.json?apikey=ZOV7FltnOvfdD7o9",
         method: 'GET',
         headers: {
             'Content-Type': "application/json",
@@ -152,7 +148,7 @@ let getConcertsFromSongkick = function (concerts) {
 app.get('/songkick/:concerts', function (req, res) {
 
 
-    //external api function call and response
+    //external api function call and response CALEB - possible should be req.params.artistId
     let searchReq = getConcertsFromSongkick(req.params.concerts);
 
     //get the data from the first api call

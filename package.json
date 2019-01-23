@@ -1,14 +1,12 @@
 {
-    "name": "investment-simulator-capstone",
+    "name": "search-concerts-by-artist",
     "version": "1.0.0",
-    "description": "The Investment Simulator app is the best way to test and learn investing without risking any money. Through the app you can create portfolios, add and remove investments and see up to date prices in US stocks. Come see how you would fair against Wallstreet.",
-    "main": "server.js",
+    "description": "The Search Concerts by Artist app lets you add artists you love to your follow list then find their upcoming concerts",
     "dependencies": {
         "bcryptjs": "^2.3.0",
         "body-parser": "^1.15.2",
         "cors": "^2.8.4",
         "express": "^4.14.0",
-        "highcharts": "^6.1.4",
         "moment": "^2.18.1",
         "mongodb": "^2.2.9",
         "mongoose": "^4.5.10",

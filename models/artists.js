@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 
 
 const artistSchema = new mongoose.Schema({
-    //change type to relavent data later
     artistId: {
         type: String,
         required: false
