@@ -95,7 +95,7 @@ let getArtistFromSongkick = function (artistName) {
 };
 
 //CALEB - update - local API endpont communicating with the external api endpoint
-app.get('/songkick/:artistName', function (req, res) {
+app.get('/songkick/by-artist/:artistName', function (req, res) {
 
 
     //external api function call and response
@@ -112,13 +112,10 @@ app.get('/songkick/:artistName', function (req, res) {
     });
 });
 
-let getConcertsFromSongkick = function (concerts) {
+let getConcertsFromSongkick = function (artistId) {
     let emitter = new events.EventEmitter();
-    // ???
-    let artistId;
-    console.log(artistId)
 
-    //CALEB - need to get artist_id from artist schema/getArtistFromSongkick response and set equal to artistId / concert may need to be "event" ??
+    //CALEB - concert may need to be "event" ??
     let options = {
         host: 'https://api.songkick.com',
         path: "/api/3.0/artists/" + artistId + "/calendar.json?apikey=ZOV7FltnOvfdD7o9",
@@ -145,11 +142,11 @@ let getConcertsFromSongkick = function (concerts) {
 };
 
 //CALEB - update - local API endpont communicating with the external api endpoint
-app.get('/songkick/:concerts', function (req, res) {
+app.get('/songkick/by-event/:concerts', function (req, res) {
 
 
     //external api function call and response CALEB - possible should be req.params.artistId
-    let searchReq = getConcertsFromSongkick(req.params.concerts);
+    let searchReq = getConcertsFromSongkick(req.params.artistId);
 
     //get the data from the first api call
     searchReq.on('end', function (item) {
@@ -164,21 +161,21 @@ app.get('/songkick/:concerts', function (req, res) {
 });
 
 // GET -----------------------------------------
-app.get('/songkick/:artists', function (req, res) {
-
-    //external api function call and response
-    let searchReq = getConcertsFromSongkick(req.params.artist);
-
-    //get the data from the first api call
-    searchReq.on('end', function (item) {
-        res.json(item);
-    });
-
-    //error handling
-    searchReq.on('error', function (code) {
-        res.sendStatus(code);
-    });
-});
+//app.get('/songkick/:artists', function (req, res) {
+//
+//    //external api function call and response
+//    let searchReq = getConcertsFromSongkick(req.params.artist);
+//
+//    //get the data from the first api call
+//    searchReq.on('end', function (item) {
+//        res.json(item);
+//    });
+//
+//    //error handling
+//    searchReq.on('error', function (code) {
+//        res.sendStatus(code);
+//    });
+//});
 
 // -------------artist ENDPOINTS------------------------------------------------
 // POST -----------------------------------------
