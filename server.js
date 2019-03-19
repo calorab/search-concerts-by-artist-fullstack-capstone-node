@@ -31,7 +31,7 @@ mongoose.Promise = global.Promise;
 // ---------------- RUN/CLOSE SERVER -----------------------------------------------------
 let server;
 
-function runServer(urlToUse) {
+function runServerOld(urlToUse) {
     return new Promise((resolve, reject) => {
         mongoose.connect(urlToUse, err => {
             if (err) {
@@ -49,11 +49,23 @@ function runServer(urlToUse) {
     });
 }
 
+function runServer(urlToUse) {
+    return new Promise((resolve, reject) => {
+        server = app.listen(8080, () => {
+            console.log(`Listening on localhost:${8080}`);
+            resolve();
+        })
+            .on('error', err => {
+            reject(err);
+        });
+    });
+}
+
 if (require.main === module) {
     runServer(config.DATABASE_URL).catch(err => console.error(err));
 }
 
-function closeServer() {
+function closeServerOld() {
     return mongoose.disconnect().then(() => new Promise((resolve, reject) => {
         console.log('Closing server');
         server.close(err => {
@@ -65,12 +77,24 @@ function closeServer() {
     }));
 }
 
+function closeServer() {
+    return new Promise((resolve, reject) => {
+        console.log('Closing server');
+        server.close(err => {
+            if (err) {
+                return reject(err);
+            }
+            resolve();
+        });
+    });
+}
 
-let getArtistFromSongkick = function (artistName) {
+
+let getArtistFromSongkickOld = function (artistName) {
     let emitter = new events.EventEmitter();
 
     let options = {
-        host: 'https://api.songkick.com',
+        host: 'api.songkick.com',
         path: "/api/3.0/search/artists.json?apikey=ZOV7FltnOvfdD7o9&query=" + artistName,
         method: 'GET',
         headers: {
@@ -89,6 +113,34 @@ let getArtistFromSongkick = function (artistName) {
 
     }).on('error', function (e) {
 
+        emitter.emit('error', e);
+    });
+    return emitter;
+};
+
+let getArtistFromSongkick = function (artistName) {
+    let emitter = new events.EventEmitter();
+
+    let options = {
+        host: 'api.songkick.com',
+        path: "/api/3.0/search/artists.json?apikey=ZOV7FltnOvfdD7o9&query=" + artistName,
+        headers: {
+            'Content-Type': "application/json",
+            'Port': 443
+        }
+    };
+
+    https.get(options, function (res) {
+        let body = '';
+        res.on('data', function (chunk) {
+            body += chunk;
+        });
+        res.on('end', function(){
+            let jsonFormattedResults = JSON.parse(body);
+            emitter.emit('end', jsonFormattedResults);
+        });
+
+    }).on('error', function (e) {
         emitter.emit('error', e);
     });
     return emitter;
